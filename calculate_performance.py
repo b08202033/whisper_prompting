@@ -48,7 +48,7 @@ for f in folder_names:
         for j in domains:
             p = '_'.join(j.split())
             if corpus == 'gigaspeech':
-                file_name = f"./multidomain_gigaspeech/{folder_name}_source_{'_'.join(folder_map[d].split())}/real_{s}_prompt_{p}.json"
+                file_name = f"./multidomain_gigaspeech/{folder_name}/real_{s}_prompt_{p}.json"
             else:
                 file_name = f"./multidomain_ASCEND/{folder_name}/subset_{lang}_real_{s}_prompt_{p}.json"
             with open(file_name, encoding='utf-16') as f:
