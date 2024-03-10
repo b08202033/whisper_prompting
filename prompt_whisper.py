@@ -77,52 +77,7 @@ def calculate_MER(results):
 
 def main(args):
     example = None
-    if args.example is not None:
-        print("-" * 100)
-        print("In-context learning is activated.") # Currently only support one example for all the dataset
-
-        example_dataset = load_dataset(args.dataset_path, cache_dir=args.cache_dir)
-        tmp_dataset = None
-
-        # case 1: ML2021_ASR
-        if 'label' not in example_dataset['test'].features.keys():
-            for split in example_dataset.keys():
-                tmp_dataset = example_dataset[split].filter(lambda x: args.example in x['file'])
-                if tmp_dataset.num_rows == 1:
-                    break
-            assert tmp_dataset.num_rows == 1, "The example path is not unique in the dataset"
-
-            example = tmp_dataset[0]
-            example['transcription'] = example['transcription'] + '。'
-            del tmp_dataset
-            del example_dataset
-
-        # case 2: CS Zerospeech
-        else:
-            example_list = args.example.split("/")
-            assert (example_list[0] == 'train') or (example_list[0] == 'test') or (example_list[0] == 'dev'), "The split should be either train, test, or dev"
-            assert (example_list[1] == 'correct') or (example_list[1] == 'wrong'), "The label should be either correct or wrong"
-            assert '.wav' in example_list[2], "The audio file should be in .wav format"
-            
-            print("Finding the example in the dataset.")
-            dataset = load_dataset(args.dataset_path, split=example_list[0], cache_dir=args.cache_dir)
-            dataset = dataset.filter(lambda x: x['label'] == 0 if example_list[1] == 'correct' else x['label'] == 1)
-            dataset = dataset.filter(lambda x: x['audio']['path'] == example_list[2])
-            assert dataset.num_rows > 0, "The example is not found in the dataset"
-            assert dataset.num_rows == 1, "The example is not unique in the dataset"
-            print("The example is found in the dataset.")
-            
-            example = dataset[0]
-            if example['transcription'][-1] == '.':
-                example['transcription'] = example['transcription'][:-1] + '。'
-            elif example['transcription'][-1] != '。':
-                example['transcription'] = example['transcription'] + '。'
-
-            del dataset
-        
-        assert example is not None, "The example is not found in the dataset"
-        print("Example transcription:", example['transcription'])
-
+    
     if not os.path.exists(args.output_dir):
         print("Create output directory:", args.output_dir)
         os.makedirs(args.output_dir)
@@ -133,7 +88,7 @@ def main(args):
     DATASET_PATH = args.dataset_path
     dataset = load_dataset(DATASET_PATH, split=args.split, cache_dir=args.cache_dir)
 
-    if DATASET_PATH == "ky552/cszs_fr_en":
+    if DATASET_PATH == "ky552/cszs_fr_en" or DATASET_PATH == "ky552/cszs_zh_en":
         dataset = dataset.remove_columns(["wrong_audio", 'wrong_transcription', 'wrong_file'])
         dataset = dataset.rename_column("correct_audio", "audio")
         dataset = dataset.rename_column("correct_transcription", "transcription")
@@ -151,10 +106,10 @@ def main(args):
     print("="*15, "Model Info", "="*17)
     device = "cuda"
     model_name_or_path = args.model_name_or_path
-    model = MyWhisperForConditionalGeneration.from_pretrained(model_name_or_path, cache_dir="./cache").to(device)
+    model = MyWhisperForConditionalGeneration.from_pretrained(model_name_or_path, cache_dir=args.cache_dir).to(device)
     
     # Some models don't have a preprocessor to load. We initialize from openai's
-    tokenizer = WhisperTokenizer.from_pretrained(model_name_or_path, cache_dir="./cache") 
+    tokenizer = WhisperTokenizer.from_pretrained(model_name_or_path, cache_dir=arg.cache_dir) 
     processor = WhisperProcessor.from_pretrained("openai/whisper-large-v3")
     processor.tokenizer = tokenizer
     print("Model: ", model_name_or_path)

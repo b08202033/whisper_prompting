@@ -13,7 +13,6 @@ if corpus == 'gigaspeech':
 else:
     domains = ['education', 'persona', 'technology', 'philosophy', 'sports']
 
-# ASCEND-en english prompt
 folder_names= [
     "multidomain_ASCEND/whisper_transcribe_video_subset_en",
     "multidomain_ASCEND/whisper_talk_about_subset_en",
@@ -71,7 +70,7 @@ for f in folder_names:
         s = '_'.join(d.split())
         
         if corpus == 'gigaspeech':
-            file_name = f"./multidomain_gigaspeech/{folder_name}_source_{'_'.join(folder_map[d].split())}/real_{s}_prompt_{s}.json"
+            file_name = f"./multidomain_gigaspeech/{folder_name}/real_{s}_prompt_{s}.json"
         else:
             file_name = f"./multidomain_ASCEND/{folder_name}/subset_{lang}_real_{d}_prompt_{d}.json"
         with open(file_name, encoding='utf-16') as f:
@@ -94,7 +93,7 @@ for f in folder_names:
             b = '_'.join(j.split())
             
             if corpus == 'gigaspeech':
-                file_name = f"./multidomain_gigaspeech/{folder_name}_source_{folder_map[i]}/real_{a}_prompt_{b}.json"
+                file_name = f"./multidomain_gigaspeech/{folder_name}/real_{a}_prompt_{b}.json"
             else:
                 file_name = f"./multidomain_ASCEND/{folder_name}/subset_{lang}_real_{i}_prompt_{j}.json"
             with open(file_name, encoding='utf-16') as f:

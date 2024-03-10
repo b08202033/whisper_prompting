@@ -33,6 +33,7 @@ def get_args_parser():
     parser.add_argument('--dataset_path', '-d', type=str, default='CAiRE/ASCEND')
     parser.add_argument('--example', '-e', type=str)
     parser.add_argument('--use_domain_tag', '-u', action='store_true')
+    parser.add_argument('--cache_dir', type=str, default="./cache")
     return parser.parse_args()
 
 def whisper_feature_extractor(raw_audio: np.array):
@@ -42,52 +43,7 @@ def whisper_feature_extractor(raw_audio: np.array):
 
 def main(args):
     example = None
-    if args.example is not None:
-        print("-" * 100)
-        print("In-context learning is activated. Checking the format.") # Currently only support one example for all the dataset
-
-        example_dataset = load_dataset(args.dataset_path, cache_dir="./cache")
-        tmp_dataset = None
-
-        # case 1: ML2021_ASR
-        if 'label' not in example_dataset['test'].features.keys():
-            for split in example_dataset.keys():
-                tmp_dataset = example_dataset[split].filter(lambda x: args.example in x['audio']['path'])
-                if tmp_dataset.num_rows == 1:
-                    break
-            assert tmp_dataset.num_rows == 1, "The example path is not unique in the dataset"
-
-            example = tmp_dataset[0]
-            example['transcription'] = example['transcription'] + '。'
-            del tmp_dataset
-            del example_dataset
-
-        # case 2: CS Zerospeech
-        else:
-            example_list = args.example.split("/")
-            assert (example_list[0] == 'train') or (example_list[0] == 'test') or (example_list[0] == 'dev'), "The split should be either train, test, or dev"
-            assert (example_list[1] == 'correct') or (example_list[1] == 'wrong'), "The label should be either correct or wrong"
-            assert '.wav' in example_list[2], "The audio file should be in .wav format"
-            
-            print("Finding the example in the dataset.")
-            dataset = load_dataset(args.dataset_path, split=example_list[0], cache_dir="./cache")
-            dataset = dataset.filter(lambda x: x['label'] == 0 if example_list[1] == 'correct' else x['label'] == 1)
-            dataset = dataset.filter(lambda x: x['audio']['path'] == example_list[2])
-            assert dataset.num_rows > 0, "The example is not found in the dataset"
-            assert dataset.num_rows == 1, "The example is not unique in the dataset"
-            print("The example is found in the dataset.")
-            
-            example = dataset[0]
-            if example['transcription'][-1] == '.':
-                example['transcription'] = example['transcription'][:-1] + '。'
-            elif example['transcription'][-1] != '。':
-                example['transcription'] = example['transcription'] + '。'
-                
-            del dataset
-        
-        assert example is not None, "The example is not found in the dataset"
-        print("Example transcription:", example['transcription'])
-
+    
     if not os.path.exists(args.output_dir):
         print("Create output directory:", args.output_dir)
         os.makedirs(args.output_dir)
@@ -96,7 +52,7 @@ def main(args):
         
     # Load dataset
     DATASET_PATH = args.dataset_path
-    dataset = load_dataset(DATASET_PATH, split=args.split, cache_dir="./cache")
+    dataset = load_dataset(DATASET_PATH, split=args.split, cache_dir=args.cache_dir)
 
     # spliting topics
     topics = ['education', 'persona', 'technology', 'philosophy', 'sports']
@@ -121,10 +77,10 @@ def main(args):
     print("="*15, "Model Info", "="*15)
     device = "cuda"
     model_name_or_path = args.model_name_or_path
-    model = MyWhisperForConditionalGeneration.from_pretrained(model_name_or_path, cache_dir="./cache").to(device)
+    model = MyWhisperForConditionalGeneration.from_pretrained(model_name_or_path, cache_dir=args.cache_dir).to(device)
     
     # Some models don't have a preprocessor to load. We initialize from openai's
-    tokenizer = WhisperTokenizer.from_pretrained(model_name_or_path, cache_dir="./cache") 
+    tokenizer = WhisperTokenizer.from_pretrained(model_name_or_path, cache_dir=args.cache_dir) 
     processor = WhisperProcessor.from_pretrained("openai/whisper-large-v3")
     processor.tokenizer = tokenizer
     print("Model: ", model_name_or_path)
