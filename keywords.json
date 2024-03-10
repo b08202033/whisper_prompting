@@ -1,0 +1,60 @@
+{
+    "ASCEND": {
+        "education": [
+            "Education",
+            "learning",
+            "teaching",
+            "university"
+        ],
+        "persona": [
+            "Persona",
+            "character",
+            "identity",
+            "hobby"
+        ],
+        "technology": [
+            "Technology",
+            "social media",
+            "mobile applications",
+            "smart devices"
+        ],
+        "philosophy": [
+            "Philosophy",
+            "ethics",
+            "dilemma",
+            "morality"
+        ],
+        "sports": [
+            "Sports",
+            "exercise",
+            "game",
+            "fitness"
+        ]
+    },
+    "GigaSpeech": {
+        "Science and Technology": [
+            "Science and technology",
+            "web",
+            "innovation",
+            "media"
+        ],
+        "Sports": [
+            "Sports",
+            "exercise",
+            "game",
+            "fitness"
+        ],
+        "Arts": [
+            "Arts",
+            "culture",
+            "performing",
+            "visual"
+        ],
+        "Nonprofits and Activism": [
+            "Nonprofits and activism",
+            "society",
+            "organization",
+            "social justice"
+        ]
+    }
+}
