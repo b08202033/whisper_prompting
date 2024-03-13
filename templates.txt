@@ -1,10 +1,10 @@
-This utterance is about {topic}
-So we were just taliking about {topic}
+This utterance is about {topic}.
+So we were just taliking about {topic}.
 {keyword_1}, {keyword_2}, ... {keyword_N}
 Domain: {topic}
 How do you think about {topic}?
-The topic of this talk is {topic}
-Transcribe this video of {topic}
+The topic of this talk is {topic}.
+Transcribe this video of {topic}.
 {topic}
-Describe your experiences with {topic}
-Let me share something about {topic} with you
+Describe your experiences with {topic}.
+Let me share something about {topic} with you.
