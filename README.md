@@ -1,4 +1,9 @@
-# DO PROMPTS REALLY PROMPT? Exploring the Prompt Understanding Capability of Whisper
+# Do Prompts Really Prompt? Exploring the Prompt Understanding Capability of Whisper
+<p align="center">
+  <a href="https://2024.ieeeslt.org/">[SLT2024]</a> <a href="https://arxiv.org/abs/2406.05806">[arXiv]</a>
+</p>
+
+This is the official implementation of the SLT2024 paper "Do Prompts Really Prompt? Exploring the Prompt Understanding Capability of Whisper".
 
 ## Datasets
 All the used datasets are publicly available. Here's the links:
@@ -9,7 +14,7 @@ All the used datasets are publicly available. Here's the links:
 
 ## Usage
 Here are some examples of running our codes. Feel free to modify the arguments and the codes if needed.
-* Code-switched ASR
+* Code-switched ASR  
 Here's an example for running on CSZS-correct-zh and CSZS-correct-fr. 
 ```
 python prompt_whisper.py -t transcribe -l zh -m "openai/whisper-large-v3" \\
@@ -32,7 +37,7 @@ python count_language.py
 ```
 
 
-* Textual Prompts
+* Textual Prompts  
 For the templates and keywords, please refer to ``templates.txt`` and ``keywords.json``
 
 For the experiments of textual prompts on ASCEND-zh and ASCEND-en, you can run like:
