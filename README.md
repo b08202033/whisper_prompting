@@ -1,4 +1,4 @@
-# Exploring the Prompt Understanding Capability of Whisper
+# DO PROMPTS REALLY PROMPT? Exploring the Prompt Understanding Capability of Whisper
 
 ## Datasets
 All the used datasets are publicly available. Here's the links:
